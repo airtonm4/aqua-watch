@@ -1,0 +1,28 @@
+# Alembic cheat sheet
+
+To generate a new revision with a message (the message is optional):\
+`alembic revision --autogenerate -m "Added device and device_binding table" --rev-id=some_revision_id`
+
+Relative upgrade and downgrade:\
+`alembic upgrade +1`\
+`alembic upgrade +2`\
+`alembic upgrade 060c55fadf18+3`\
+`alembic downgrade -1`\
+`alembic downgrade -2`\
+`alembic downgrade 060c55fadf18-3`
+
+Absolute upgrade and downgrade:\
+`alembic upgrade 060c55fadf18`\
+`alembic upgrade head`\
+`alembic downgrade 060c55fadf18`\
+`alembic downgrade base`
+
+Revision order:\
+`alembic history`
+
+Info about current alembic version in the database:\
+`alembic current`
+
+To stamp a version (force a change in the database revision without changing the database):\
+`alembic stamp head`\
+`alembic stamp 060c55fadf18`

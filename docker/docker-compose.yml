@@ -1,0 +1,47 @@
+services:
+  app:
+    build:
+      context: ../
+      dockerfile: ./docker/dockerfile
+    container_name: aqua_watch_app
+    command:
+      [
+        "bash",
+        "-c",
+        "sleep 10 && alembic upgrade head && python -m app.server --address 0.0.0.0",
+      ]
+    ports:
+      - "8000:8000"
+    environment:
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      # JWE_KEY: ${JWE_KEY}
+      DB_HOST: db
+      DB_CONNECTION: postgresql
+      SQLALCHEMY_DATABASE_URL: "postgresql://${DB_USER}:${DB_PASSWORD}@db:5432/aqua_db"
+
+    volumes:
+      - ../app:/usr/src/app/app # Mount apenas o diretório app para hot reload
+    depends_on:
+      - db
+    networks:
+      - main-network
+
+  db:
+    image: postgres:15
+    container_name: aqua_watch_db
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: aqua_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./db_content/:/var/lib/postgresql/data
+
+    networks:
+      - main-network
+
+networks:
+  main-network:
+    driver: bridge
